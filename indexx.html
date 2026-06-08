@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Deck - Narasi Kopi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        narasi: {
+                            red: '#961a16',      /* Pure Narasi Red */
+                            redDark: '#75120f',  /* Deep Crimson */
+                            charcoal: '#1a1513', /* Rich Off-black */
+                            cream: '#FAF6F0',    /* Soft Warm Background */
+                            clay: '#D9C5B2',     /* Accent Earth Tone */
+                            stone: '#5C5450'     /* Muted Text */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .slide-enter {
+            opacity: 0;
+            transform: translateY(12px) scale(0.99);
+        }
+        .slide-active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Custom range styling */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #961a16;
+            cursor: pointer;
+            border: 2px solid #FAF6F0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #961a16;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-narasi-cream text-narasi-charcoal font-sans min-h-screen flex flex-col antialiased transition-colors duration-500" id="body-theme">
+
+    <!-- Header bar -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-stone-200/60 sticky top-0 z-50 px-4 py-3 md:px-8 transition-colors duration-500" id="header-theme">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-narasi-red rounded-full flex items-center justify-center text-white font-serif font-black text-xl shadow-md select-none">
+                    n.
+                </div>
+                <div>
+                    <h1 class="text-xs md:text-sm font-extrabold tracking-widest text-narasi-charcoal uppercase transition-colors duration-500" id="brand-title"> NARASI KOPI</h1>
+                    <p class="text-[10px] text-narasi-red font-bold uppercase tracking-wider">Menghidupkan Ruang, Menciptakan Nilai</p>
+                </div>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- Theme Controller: Pagi (Light) vs Senja (Dark Cozy) -->
+                <button onclick="toggleAtmosphere()" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 hover:border-narasi-red text-xs font-semibold bg-white shadow-sm transition-all text-stone-700" id="theme-btn">
+                    <i data-lucide="sunset" class="w-4 h-4 text-amber-600" id="theme-icon"></i>
+                    <span id="theme-text" class="hidden sm:inline">Suasana Senja</span>
+                </button>
+                
+                <div class="h-6 w-[1px] bg-stone-300"></div>
+
+                <!-- Export / Print -->
+                <button onclick="window.print()" class="p-2 text-stone-500 hover:text-narasi-red hover:bg-stone-100 rounded-lg transition-colors" title="Cetak Pitchdeck">
+                    <i data-lucide="printer" class="w-4.5 h-4.5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 max-w-7xl mx-auto w-full px-4 py-6 md:py-10 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Left Sidebar: Interactive Slide List/Outline (Desktop Only) -->
+        <aside class="hidden lg:flex flex-col gap-3 col-span-1">
+            <span class="text-[10px] font-black tracking-widest text-narasi-stone uppercase px-1">Daftar Slide Presentasi</span>
+            <div class="space-y-1.5 max-h-[500px] overflow-y-auto pr-2" id="slide-outline-container">
+                <!-- Injected dynamically -->
+            </div>
+
+            <!-- Quick Brand Quote in Sidebar -->
+            <div class="mt-6 p-4 rounded-2xl bg-white border border-stone-200/60 shadow-sm transition-colors duration-500" id="sidebar-quote-card">
+                <div class="w-6 h-6 bg-narasi-red/10 rounded-full flex items-center justify-center mb-2">
+                    <i data-lucide="quote" class="w-3.5 h-3.5 text-narasi-red"></i>
+                </div>
+                <p class="text-[11px] italic text-narasi-stone leading-relaxed">
+                    "Kami mengubah ruang yang diam menjadi ruang yang hidup, produktif, dan memiliki cerita."
+                </p>
+            </div>
+        </aside>
+
+        <!-- Main Slide Presentation Frame -->
+        <main class="col-span-1 lg:col-span-3 flex flex-col justify-between min-h-[500px] bg-white rounded-3xl border border-stone-200/80 shadow-xl p-6 md:p-12 relative overflow-hidden transition-colors duration-500" id="main-slide-frame">
+            
+            <!-- Large elegant 'n.' background watermark that rotates/fades on transition -->
+            <div class="absolute -right-16 -bottom-16 text-[280px] font-serif font-black text-narasi-red/[0.03] select-none pointer-events-none transition-all duration-700 ease-out z-0" id="slide-watermark">
+                n.
+            </div>
+
+            <!-- Slide Top Indicator -->
+            <div class="flex items-center justify-between border-b border-stone-100 pb-4 mb-6 z-10 relative">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-narasi-red"></span>
+                    <span id="active-category" class="text-[10px] font-black tracking-widest text-narasi-red uppercase">Narasi</span>
+                </div>
+                <div class="text-xs font-mono text-narasi-stone font-semibold">
+                    <span id="current-index-num">01</span> / <span id="total-slides-num">08</span>
+                </div>
+            </div>
+
+            <!-- Slide Content Body (Fade In Out) -->
+            <div id="slide-body-viewport" class="flex-1 flex flex-col justify-center py-4 z-10 relative slide-active">
+                <!-- Content will be written here dynamically -->
+            </div>
+
+            <!-- Slide Footer Controls -->
+            <div class="border-t border-stone-100 pt-5 mt-6 flex flex-col sm:flex-row gap-4 items-center justify-between z-10 relative">
+                <!-- Swipe Tip for Touchscreen Devices -->
+                <div class="text-[10px] text-narasi-stone font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="info" class="w-3.5 h-3.5 text-narasi-red"></i>
+                    <span>Bisa menggunakan tombol arah panah keyboard <span class="hidden sm:inline">atau geser layar</span></span>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
+                    <button onclick="prevSlide()" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 border border-stone-300 rounded-xl hover:bg-stone-50 active:bg-stone-100 font-bold text-xs text-narasi-charcoal transition-all">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        <span>Kembali</span>
+                    </button>
+                    
+                    <button onclick="nextSlide()" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 bg-narasi-red hover:bg-narasi-redDark text-white rounded-xl font-bold text-xs shadow-md shadow-narasi-red/20 transition-all">
+                        <span>Lanjut</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Slide Content Database (Indonesian Only) -->
+    <script>
+        const SLIDES = [
+            {
+                id: 1,
+                category: "01. PEMBUKA",
+                title: "Narasi Kopi",
+                content: `
+                    <div class="text-center space-y-6 py-6">
+                        <span class="text-xs font-extrabold tracking-widest text-narasi-red bg-narasi-red/5 px-3 py-1.5 rounded-full uppercase">PITCH DECK PROPOSAL</span>
+                        <h2 class="text-4xl md:text-5xl font-serif font-black text-narasi-charcoal leading-none transition-colors duration-500" id="slide1-h2">Menghidupkan Ruang,<br><span class="text-narasi-red">Menciptakan Nilai</span></h2>
+                        <p class="text-sm md:text-base text-narasi-stone font-medium max-w-lg mx-auto">
+                            Sebuah model kolaborasi kedai kopi yang ringan modal, fleksibel, dan didorong oleh gerakan komunitas.
+                        </p>
+                        <div class="h-1.5 w-16 bg-narasi-red mx-auto rounded-full"></div>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                category: "01. PEMBUKA",
+                title: "Bukan Sekadar Menjual Kopi",
+                content: `
+                    <div class="space-y-6">
+                        <div class="max-w-xl">
+                            <span class="text-[10px] font-black tracking-widest text-narasi-red uppercase block mb-1">Filosofi Ruang</span>
+                            <h2 class="text-2xl md:text-3xl font-serif font-bold text-narasi-charcoal transition-colors duration-500" id="slide2-h2">Menjembatani Ruang Mati & Manusia</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <p class="text-xs text-narasi-stone leading-relaxed">
+                                    Di setiap sudut kota terdapat aset yang belum bekerja secara maksimal:
+                                </p>
+                                <ul class="space-y-2 text-xs font-semibold text-narasi-charcoal transition-colors duration-500" id="slide2-ul">
+                                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-narasi-red"></span> Teras atau halaman rumah yang kosong</li>
+                                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-narasi-red"></span> Ruang usaha samping ruko yang tidak produktif</li>
+                                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-narasi-red"></span> Bangunan tua yang kehilangan aktivitas</li>
+                                </ul>
+                            </div>
+                            <div class="bg-narasi-cream/80 p-5 rounded-2xl border border-stone-200/50 flex flex-col justify-center">
+                                <p class="text-xs italic text-narasi-stone leading-relaxed">
+                                    "Masyarakat semakin aktif mencari ruang ketiga—untuk berkumpul, bekerja mandiri (WFC), berdiskusi hangat, dan menikmati waktu dengan lebih bernama."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                category: "02. TANTANGAN YANG KAMI LIHAT",
+                title: "Hambatan Industri Kopi",
+                content: `
+                    <div class="space-y-5">
+                        <div class="max-w-xl">
+                            <span class="text-[10px] font-black tracking-widest text-narasi-red uppercase block mb-1">Identifikasi Masalah</span>
+                            <h2 class="text-2xl md:text-3xl font-serif font-bold text-narasi-charcoal transition-colors duration-500" id="slide3-h2">Mengapa Kedai Kopi Biasa Sulit Berdiri?</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-stone-50 border border-stone-200/60 p-5 rounded-2xl">
+                                <div class="w-8 h-8 rounded-full bg-narasi-red/10 flex items-center justify-center mb-3">
+                                    <i data-lucide="home-off" class="w-4.5 h-4.5 text-narasi-red"></i>
+                                </div>
+                                <h4 class="font-extrabold text-narasi-charcoal text-xs mb-1.5 transition-colors duration-500" id="slide3-h4-1">Aset Tidak Produktif</h4>
+                                <p class="text-[10px] text-narasi-stone leading-relaxed">Banyak area strategis milik perorangan terbiarkan menganggur karena tidak tahu cara memanfaatkannya.</p>
+                            </div>
+                            <div class="bg-stone-50 border border-stone-200/60 p-5 rounded-2xl">
+                                <div class="w-8 h-8 rounded-full bg-narasi-red/10 flex items-center justify-center mb-3">
+                                    <i data-lucide="dollar-sign" class="w-4.5 h-4.5 text-narasi-red"></i>
+                                </div>
+                                <h4 class="font-extrabold text-narasi-charcoal text-xs mb-1.5 transition-colors duration-500" id="slide3-h4-2">Tingginya Biaya Awal</h4>
+                                <p class="text-[10px] text-narasi-stone leading-relaxed">Konsep konvensional terhambat biaya sewa ruko tahunan, renovasi sipil masif, & mesin espresso mahal.</p>
+                            </div>
+                            <div class="bg-stone-50 border border-stone-200/60 p-5 rounded-2xl">
+                                <div class="w-8 h-8 rounded-full bg-narasi-red/10 flex items-center justify-center mb-3">
+                                    <i data-lucide="fingerprint" class="w-4.5 h-4.5 text-narasi-red"></i>
+                                </div>
+                                <h4 class="font-extrabold text-narasi-charcoal text-xs mb-1.5 transition-colors duration-500" id="slide3-h4-3">Kurangnya Diferensiasi</h4>
+                                <p class="text-[10px] text-narasi-stone leading-relaxed">Kedai kopi baru bermunculan sekadar menjual air gula & es kopi susu manis, hampa identitas dan ikatan emosi.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                category: "03. SOLUSI",
+                title: "Mengubah Ruang Menjadi Destinasi",
+                content: `
+                    <div class="space-y-6">
+                        <div class="max-w-xl">
+                            <span class="text-[10px] font-black tracking-widest text-narasi-red uppercase block mb-1">Jawaban Kemitraan</span>
+                            <h2 class="text-2xl md:text-3xl font-serif font-bold text-narasi-charcoal transition-colors duration-500" id="slide4-h2">Model Kolaboratif Coffee Space</h2>
+                        </div>
+                        <div class="bg-narasi-charcoal text-white p-6 rounded-2xl relative overflow-hidden">
+                            <p class="text-xs text-stone-300 leading-relaxed max-w-lg mb-4">
+                                Narasi Kopi mengembangkan konsep kedai yang tidak menuntut modal berat, melainkan berfokus penuh pada optimasi sumber daya bersama:
+                            </p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
+                                <div class="border-l border-narasi-red pl-3">
+                                    <span class="text-[9px] text-narasi-red font-black block tracking-widest uppercase">ASET</span>
+                                    <span class="text-[10px] text-stone-300">Mengoptimasi area menganggur tanpa biaya sewa di muka.</span>
+                                </div>
+                                <div class="border-l border-narasi-red pl-3">
+                                    <span class="text-[9px] text-narasi-red font-black block tracking-widest uppercase">OPERASIONAL</span>
+                                    <span class="text-[10px] text-stone-300">Ramping, mengandalkan menu seduh manual berkualitas.</span>
+                                </div>
+                                <div class="border-l border-narasi-red pl-3">
+                                    <span class="text-[9px] text-narasi-red font-black block tracking-widest uppercase">BRANDING</span>
+                                    <span class="text-[10px] text-stone-300">Sentuhan puitis sastra & visual minimalis estetik.</span>
+                                </div>
+                                <div class="border-l border-narasi-red pl-3">
+                                    <span class="text-[9px] text-narasi-red font-black block tracking-widest uppercase">AKTIVASI</span>
+                                    <span class="text-[10px] text-stone-300">Kumpulan diskusi, akustik intim, & wadah kreatif lokal.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                category: "04. NILAI YANG KAMI BAWA",
+                title: "Empat Pilar Keunikan Usaha",
+                content: `
+                    <div class="space-y-5">
+                        <div class="max-w-xl">
+                            <span class="text-[10px] font-black tracking-widest text-narasi-red uppercase block mb-1">Kelebihan Kompetitif</span>
+                            <h2 class="text-2xl md:text-3xl font-serif font-bold text-narasi-charcoal transition-colors duration-500" id="slide5-h2">Pilar Pertumbuhan Narasi</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-start gap-3 bg-stone-50 p-4 rounded-xl">
+                                <span class="bg-narasi-red/10 text-narasi-red p-2 rounded-lg shrink-0"><i data-lucide="award" class="w-4 h-4"></i></span>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-narasi-charcoal transition-colors duration-500" id="slide5-h4-1">Konsep & Citra Branding</h4>
+                                    <p class="text-[10px] text-narasi-stone leading-relaxed">Membangun tatanan kedai berkarakter puitis, menarik minat pasar usia produktif & milenial secara organik.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 bg-stone-50 p-4 rounded-xl">
+                                <span class="bg-narasi-red/10 text-narasi-red p-2 rounded-lg shrink-0"><i data-lucide="check-square" class="w-4 h-4"></i></span>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-narasi-charcoal transition-colors duration-500" id="slide5-h4-2">Sistem Operasional Terpadu</h4>
+                                    <p class="text-[10px] text-narasi-stone leading-relaxed">Pengelolaan barista, SOP pelayanan, monitoring keuangan transparan lewat POS Cloud.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 bg-stone-50 p-4 rounded-xl">
+                                <span class="bg-narasi-red/10 text-narasi-red p-2 rounded-lg shrink-0"><i data-lucide="coffee" class="w-4 h-4"></i></span>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-narasi-charcoal transition-colors duration-500" id="slide5-h4-3">Pengembangan Produk Efisien</h4>
+                                    <p class="text-[10px] text-narasi-stone leading-relaxed">Menu seduhan praktis dengan bahan baku premium pilihan namun hemat ruang simpan, menjamin margin sehat.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 bg-stone-50 p-4 rounded-xl">
+                                <span class="bg-narasi-red/10 text-narasi-red p-2 rounded-lg shrink-0"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-narasi-charcoal transition-colors duration-500" id="slide5-h4-4">Aktivasi Komunitas Kreatif</h4>
+                                    <p class="text-[10px] text-narasi-stone leading-relaxed">Pertunjukan akustik syahdu, lapak bacaan bersama, panggung diskusi kecil mendorong kedatangan berulang.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                category: "05. MODEL KOLABORASI",
+                title: "Kerjasama Fleksibel Tiga Pilar",
+                content: `
+                    <div class="space-y-4">
+                        <div class="max-w-xl">
+                            <span class="text-[10px] font-black tracking-widest text-narasi-red uppercase block mb-1">Mekanisme Bagi Hasil</span>
+                            <h2 class="text-2xl md:text-3xl font-serif font-bold text-narasi-charcoal transition-colors duration-500" id="slide6-h2">Pilih Peran Kolaborasi Anda</h2>
+                        </div>
+                        
+                        <!-- Interactive Partnership Tab Simulator -->
+                        <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                            <div class="flex items-center gap-1.5 mb-3 bg-stone-200/50 p-1 rounded-lg">
+                                <button onclick="setTab('lahan')" id="tab-lahan" class="flex-1 text-center py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-narasi-red transition-all">MITRA LOKASI</button>
+                                <button onclick="setTab('investor')" id="tab-investor" class="flex-1 text-center py-1.5 text-[10px] font-black rounded-md text-narasi-stone hover:text-narasi-charcoal transition-all">MITRA INVESTOR</button>
+                                <button onclick="setTab('operasional')" id="tab-operasional" class="flex-1 text-center py-1.5 text-[10px] font-black rounded-md text-narasi-stone hover:text-narasi-charcoal transition-all">MITRA OPERASIONAL</button>
+                            </div>
+                            
+                            <!-- Tab Content -->
+                            <div id="tab-content-area" class="bg-white p-4 rounded-xl border border-stone-200/50 space-y-2 min-h-[140px] flex flex-col justify-center">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-narasi-red/10 text-narasi-red font-bold text-[9px] rounded uppercase">Mitra Lahan</span>
+                                    <h4 class="font-extrabold text-xs text-narasi-charcoal transition-colors duration-500" id="tab-title">Pemilik Aset Pasif</h4>
+                                </div>
+                                <p class="text-xs text-narasi-stone leading-relaxed" id="tab-desc">
+                                    <strong class="text-narasi-charcoal">Kontribusi:</strong> Menyediakan halaman, ruko menganggur, bangunan kosong, atau pekarangan rumah strategis untuk dialih fungsi.<br>
+                                    <strong class="text-narasi-charcoal">Manfaat:</strong> Aktivasi lahan menjadi estetik, peningkatan traffic kunjungan, serta passive income bagi hasil tiap bulan tanpa repot kelola operasional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                category: "06. KENAPA MODEL INI MENARIK",
+                title: "Daya Tarik Finansial",
+                content: `
+                    <div class="space-y-5">
+                        <div class="max-w-xl">
+                            <span class="text-[10px] font-black tracking-widest text-narasi-red uppercase block mb-1">Kalkulator Kemitraan</span>
+                            <h2 class="text-2xl md:text-3xl font-serif font-bold text-narasi-charcoal transition-colors duration-500" id="slide7-h2">Kenapa Model Ini Sangat Menarik?</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <ul class="space-y-2.5 text-xs text-narasi-stone">
+                                    <li class="flex items-start gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-narasi-red shrink-0 mt-0.5"></i> <span><strong class="text-narasi-charcoal transition-colors duration-500" id="slide7-strong-1">Risiko Awal Rendah:</strong> Tidak bergantung pada beban modal masif di awal.</span></li>
+                                    <li class="flex items-start gap-1.5"><i data-lucide="refresh-cw" class="w-4 h-4 text-narasi-red shrink-0 mt-0.5"></i> <span><strong class="text-narasi-charcoal transition-colors duration-500" id="slide7-strong-2">Sifat Fleksibel:</strong> Dapat disesuaikan dengan luas & karakter unik aset terpasang.</span></li>
+                                    <li class="flex items-start gap-1.5"><i data-lucide="trending-up" class="w-4 h-4 text-narasi-red shrink-0 mt-0.5"></i> <span><strong class="text-narasi-charcoal transition-colors duration-500" id="slide7-strong-3">Skalabilitas Cepat:</strong> Pola gerak modular memudahkan ekspansi gerai ke lokasi-lokasi baru.</span></li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Embedded Live ROI Share Estimator -->
+                            <div class="bg-stone-50 border border-stone-200 p-4 rounded-xl space-y-2">
+                                <span class="text-[9px] font-black text-narasi-red tracking-widest uppercase block">Simulasi Bagi Hasil Bulanan</span>
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-narasi-stone font-medium">Penjualan (Cup/Hari):</span>
+                                    <span class="font-bold text-narasi-charcoal transition-colors duration-500" id="calc-vol-txt">40 Cup</span>
+                                </div>
+                                <input type="range" min="20" max="150" value="40" class="w-full h-1 bg-stone-200 rounded-lg appearance-none cursor-pointer" id="calc-volume" oninput="liveEstimate(this.value)">
+                                <div class="flex justify-between items-center text-[10px] text-narasi-stone border-t border-stone-200/80 pt-2 font-semibold">
+                                    <span>Estimasi Omset Kedai:</span>
+                                    <span id="est-revenue" class="text-narasi-charcoal transition-colors duration-500">Rp21.600.000</span>
+                                </div>
+                                <div class="flex justify-between items-center text-[11px] font-extrabold text-brand-900 bg-narasi-red/5 p-2 rounded-lg mt-1 border border-narasi-red/10">
+                                    <span class="text-narasi-red">Hak Mitra Lahan (15%):</span>
+                                    <span id="est-share" class="text-narasi-red">Rp3.240.000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
+                category: "08. PENUTUP & KONTRAK SOSIAL",
+                title: "Bertumbuh Bersama Narasi",
+                content: `
+                    <div class="text-center py-4 space-y-5">
+                        <span class="text-xs font-black tracking-widest text-narasi-red uppercase bg-narasi-red/5 px-3 py-1 rounded-full">KONTRAK KOLABORASI</span>
+                        <h2 class="text-3xl md:text-4xl font-serif italic text-narasi-charcoal leading-relaxed max-w-xl mx-auto transition-colors duration-500" id="slide8-h2">
+                            "Kami mengubah ruang yang diam menjadi ruang yang hidup, produktif, dan memiliki cerita."
+                        </h2>
+                        <p class="text-xs text-narasi-stone font-semibold uppercase tracking-widest">Mari Bertumbuh Bersama Melalui Kolaborasi yang Saling Menguntungkan.</p>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                            <span class="px-4 py-2 bg-stone-100 rounded-xl text-[10px] font-bold text-stone-600 border border-stone-200/60 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-narasi-red"></i> Hubungi Manajemen Survey</span>
+                            <span class="px-4 py-2 bg-stone-100 rounded-xl text-[10px] font-bold text-stone-600 border border-stone-200/60 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-narasi-red"></i> Setup 3 Hari, Mulai Menyeduh</span>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        let currentIdx = 0;
+        let isDarkCozyAtmosphere = false; // "Pagi" (light) by default
+
+        // Startup actions
+        window.onload = function() {
+            renderSlideOutline();
+            renderActiveSlide(currentIdx);
+            
+            // Add swipe action listeners
+            setupSlideSwipes();
+            
+            // Initialize lucide
+            lucide.createIcons();
+        }
+
+        // Render left-side panel slide menu
+        function renderSlideOutline() {
+            const container = document.getElementById('slide-outline-container');
+            container.innerHTML = '';
+            SLIDES.forEach((slide, idx) => {
+                const button = document.createElement('button');
+                button.id = `outline-item-${idx}`;
+                button.className = `w-full text-left p-3 rounded-xl border transition-all flex items-center gap-3 group ${idx === 0 ? 'bg-white border-narasi-red shadow-sm' : 'bg-transparent border-transparent hover:bg-white/40'}`;
+                button.onclick = () => jumpToSlide(idx);
+                
+                button.innerHTML = `
+                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold shrink-0 ${idx === 0 ? 'bg-narasi-red text-white' : 'bg-stone-200 text-stone-500 group-hover:bg-stone-300'}" id="outline-num-${idx}">
+                        ${(idx + 1).toString().padStart(2, '0')}
+                    </span>
+                    <div class="min-w-0">
+                        <span class="block text-[8px] font-black tracking-widest text-narasi-stone uppercase">${slide.category}</span>
+                        <span class="block text-xs font-extrabold text-narasi-charcoal transition-colors duration-500 truncate" id="outline-title-${idx}">${slide.title}</span>
+                    </div>
+                `;
+                container.appendChild(button);
+            });
+        }
+
+        function renderActiveSlide(index) {
+            const slide = SLIDES[index];
+            const viewport = document.getElementById('slide-body-viewport');
+            
+            // Trigger transition exit
+            viewport.className = "flex-1 flex flex-col justify-center py-4 z-10 relative slide-enter";
+            
+            setTimeout(() => {
+                // Change values
+                document.getElementById('active-category').innerText = slide.category;
+                document.getElementById('current-index-num').innerText = slide.id.toString().padStart(2, '0');
+                viewport.innerHTML = slide.content;
+
+                // Sync active menu state
+                SLIDES.forEach((_, idx) => {
+                    const btn = document.getElementById(`outline-item-${idx}`);
+                    const num = document.getElementById(`outline-num-${idx}`);
+                    if (btn && num) {
+                        if (idx === index) {
+                            btn.className = `w-full text-left p-3 rounded-xl border transition-all flex items-center gap-3 group bg-white border-narasi-red shadow-sm ${isDarkCozyAtmosphere ? '!bg-narasi-charcoal !border-narasi-red' : ''}`;
+                            num.className = "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold shrink-0 bg-narasi-red text-white";
+                        } else {
+                            btn.className = "w-full text-left p-3 rounded-xl border transition-all flex items-center gap-3 group bg-transparent border-transparent hover:bg-white/40";
+                            num.className = `w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold shrink-0 ${isDarkCozyAtmosphere ? 'bg-stone-800 text-stone-400' : 'bg-stone-200 text-stone-500 group-hover:bg-stone-300'}`;
+                        }
+                    }
+                });
+
+                // Update icon references
+                lucide.createIcons();
+
+                // Fire custom visual elements on specific slides (e.g. Slide 7 calculator update)
+                if (slide.id === 7) {
+                    liveEstimate(40);
+                }
+
+                // Apply Dark Cozy styling if turned on
+                if (isDarkCozyAtmosphere) {
+                    applyAtmosphereColors();
+                }
+
+                // Slide animation enter
+                viewport.className = "flex-1 flex flex-col justify-center py-4 z-10 relative slide-active";
+            }, 150);
+        }
+
+        function jumpToSlide(index) {
+            currentIdx = index;
+            renderActiveSlide(currentIdx);
+        }
+
+        function nextSlide() {
+            if (currentIdx < SLIDES.length - 1) {
+                currentIdx++;
+            } else {
+                currentIdx = 0; // wrap-around
+            }
+            renderActiveSlide(currentIdx);
+        }
+
+        function prevSlide() {
+            if (currentIdx > 0) {
+                currentIdx--;
+            } else {
+                currentIdx = SLIDES.length - 1; // wrap-around
+            }
+            renderActiveSlide(currentIdx);
+        }
+
+        // Slide 6 tab interactivity
+        function setTab(role) {
+            const tabLahan = document.getElementById('tab-lahan');
+            const tabInvestor = document.getElementById('tab-investor');
+            const tabOperasional = document.getElementById('tab-operasional');
+            const contentArea = document.getElementById('tab-content-area');
+
+            // Reset tab highlights
+            [tabLahan, tabInvestor, tabOperasional].forEach(btn => {
+                if (btn) {
+                    btn.className = `flex-1 text-center py-1.5 text-[10px] font-black rounded-md transition-all ${isDarkCozyAtmosphere ? 'text-stone-400 hover:text-stone-200' : 'text-narasi-stone hover:text-narasi-charcoal'}`;
+                }
+            });
+
+            let title = "";
+            let badge = "";
+            let text = "";
+
+            if (role === 'lahan') {
+                tabLahan.className = `flex-1 text-center py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-narasi-red transition-all ${isDarkCozyAtmosphere ? '!bg-narasi-red !text-white' : ''}`;
+                badge = "Mitra Lahan";
+                title = "Pemilik Aset Pasif";
+                text = `<strong class="text-narasi-charcoal ${isDarkCozyAtmosphere ? '!text-white' : ''}">Kontribusi:</strong> Menyediakan halaman, ruko menganggur, bangunan kosong, atau pekarangan rumah strategis untuk dialih fungsi.<br>
+                        <strong class="text-narasi-charcoal ${isDarkCozyAtmosphere ? '!text-white' : ''}">Manfaat:</strong> Aktivasi lahan menjadi estetik, peningkatan traffic kunjungan, serta passive income bagi hasil tiap bulan tanpa repot kelola operasional.`;
+            } else if (role === 'investor') {
+                tabInvestor.className = `flex-1 text-center py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-narasi-red transition-all ${isDarkCozyAtmosphere ? '!bg-narasi-red !text-white' : ''}`;
+                badge = "Mitra Investor";
+                title = "Dukungan Permodalan";
+                text = `<strong class="text-narasi-charcoal ${isDarkCozyAtmosphere ? '!text-white' : ''}">Kontribusi:</strong> Dukungan modal operasional atau peralatan modular bar untuk ekspansi.<br>
+                        <strong class="text-narasi-charcoal ${isDarkCozyAtmosphere ? '!text-white' : ''}">Manfaat:</strong> Bagi hasil terstruktur dari profit bersih bulanan, pelaporan finansial transparan, & hak perluasan waralaba/cabang bersama.`;
+            } else {
+                tabOperasional.className = `flex-1 text-center py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-narasi-red transition-all ${isDarkCozyAtmosphere ? '!bg-narasi-red !text-white' : ''}`;
+                badge = "Mitra Operasional";
+                title = "Pengelolaan & Manajemen";
+                text = `<strong class="text-narasi-charcoal ${isDarkCozyAtmosphere ? '!text-white' : ''}">Kontribusi:</strong> Menyediakan keahlian F&B, tim Barista terlatih, pengawasan harian, & standarisasi mutu.<br>
+                        <strong class="text-narasi-charcoal ${isDarkCozyAtmosphere ? '!text-white' : ''}">Manfaat:</strong> Pembagian hasil (profit sharing) berkelanjutan, komisi pengelolaan, & kesempatan mengembangkan sayap karir bersama ekosistem Narasi.`;
+            }
+
+            contentArea.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 bg-narasi-red/10 text-narasi-red font-bold text-[9px] rounded uppercase">${badge}</span>
+                    <h4 class="font-extrabold text-xs text-narasi-charcoal transition-colors duration-500" id="tab-title">${title}</h4>
+                </div>
+                <p class="text-xs text-narasi-stone leading-relaxed" id="tab-desc">
+                    ${text}
+                </p>
+            `;
+            
+            // Reapply theme colors to dynamic tab text if cozy mode is on
+            if (isDarkCozyAtmosphere) {
+                document.getElementById('tab-title').style.color = '#FFFFFF';
+                document.getElementById('tab-desc').style.color = '#A0A0A0';
+            }
+        }
+
+        // Slide 7 live estimate calculations
+        function liveEstimate(val) {
+            const volText = document.getElementById('calc-vol-txt');
+            const estRevenue = document.getElementById('est-revenue');
+            const estShare = document.getElementById('est-share');
+
+            if (!volText) return; // Prevent break if slide hasn't loaded yet
+
+            volText.innerText = `${val} Cup`;
+            
+            // Assume 18,000 IDR average pricing per cup
+            const averagePrice = 18000;
+            const monthlyRevenue = val * averagePrice * 30;
+            const landlordShare = monthlyRevenue * 0.15; // 15% Share
+
+            estRevenue.innerText = "Rp" + Math.round(monthlyRevenue).toLocaleString('id-ID');
+            estShare.innerText = "Rp" + Math.round(landlordShare).toLocaleString('id-ID');
+        }
+
+        // Theme / Cozy Mood Switcher (Pagi vs Senja)
+        function toggleAtmosphere() {
+            isDarkCozyAtmosphere = !isDarkCozyAtmosphere;
+            
+            const body = document.getElementById('body-theme');
+            const header = document.getElementById('header-theme');
+            const themeBtn = document.getElementById('theme-btn');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const activeSlideFrame = document.getElementById('main-slide-frame');
+            const quoteCard = document.getElementById('sidebar-quote-card');
+            const brandTitle = document.getElementById('brand-title');
+
+            if (isDarkCozyAtmosphere) {
+                // Transition to cozy senja atmosphere
+                body.className = "bg-narasi-charcoal text-white font-sans min-h-screen flex flex-col antialiased transition-colors duration-500";
+                header.className = "bg-stone-900 border-b border-stone-800 sticky top-0 z-50 px-4 py-3 md:px-8 transition-colors duration-500";
+                brandTitle.style.color = '#FFFFFF';
+                
+                themeBtn.className = "flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-800 hover:border-narasi-red text-xs font-semibold bg-stone-900 text-white shadow-sm transition-all";
+                themeIcon.setAttribute('data-lucide', 'sun');
+                themeText.innerText = "Suasana Pagi";
+                
+                activeSlideFrame.className = "col-span-1 lg:col-span-3 flex flex-col justify-between min-h-[500px] bg-stone-900/60 border border-stone-800 shadow-2xl p-6 md:p-12 relative overflow-hidden transition-colors duration-500";
+                
+                if (quoteCard) {
+                    quoteCard.className = "mt-6 p-4 rounded-2xl bg-stone-900 border border-stone-800 shadow-inner transition-colors duration-500";
+                }
+                
+                // Active slide frame styling changes
+                applyAtmosphereColors();
+            } else {
+                // Transition back to bright pagi atmosphere
+                body.className = "bg-[#FAF6F0] text-narasi-charcoal font-sans min-h-screen flex flex-col antialiased transition-colors duration-500";
+                header.className = "bg-white/80 backdrop-blur-md border-b border-stone-200/60 sticky top-0 z-50 px-4 py-3 md:px-8 transition-colors duration-500";
+                brandTitle.style.color = '';
+
+                themeBtn.className = "flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 hover:border-narasi-red text-xs font-semibold bg-white shadow-sm transition-all text-stone-700";
+                themeIcon.setAttribute('data-lucide', 'sunset');
+                themeText.innerText = "Suasana Senja";
+                
+                activeSlideFrame.className = "col-span-1 lg:col-span-3 flex flex-col justify-between min-h-[500px] bg-white border border-stone-200/80 shadow-xl p-6 md:p-12 relative overflow-hidden transition-colors duration-500";
+                
+                if (quoteCard) {
+                    quoteCard.className = "mt-6 p-4 rounded-2xl bg-white border border-stone-200/60 shadow-sm transition-colors duration-500";
+                }
+
+                // Revert all active titles color styling
+                revertAtmosphereColors();
+            }
+            
+            // Sync side list cards theme color
+            renderActiveSlide(currentIdx);
+            lucide.createIcons();
+        }
+
+        // Theme color helper functions to force elements dark cozy
+        function applyAtmosphereColors() {
+            // Apply text colors inside active slide card
+            const titleElement1 = document.getElementById('slide1-h2');
+            if (titleElement1) titleElement1.style.color = '#FFFFFF';
+            const titleElement2 = document.getElementById('slide2-h2');
+            if (titleElement2) {
+                titleElement2.style.color = '#FFFFFF';
+                document.getElementById('slide2-ul').style.color = '#FFFFFF';
+            }
+            const titleElement3 = document.getElementById('slide3-h2');
+            if (titleElement3) {
+                titleElement3.style.color = '#FFFFFF';
+                document.getElementById('slide3-h4-1').style.color = '#FFFFFF';
+                document.getElementById('slide3-h4-2').style.color = '#FFFFFF';
+                document.getElementById('slide3-h4-3').style.color = '#FFFFFF';
+            }
+            const titleElement4 = document.getElementById('slide4-h2');
+            if (titleElement4) titleElement4.style.color = '#FFFFFF';
+            
+            const titleElement5 = document.getElementById('slide5-h2');
+            if (titleElement5) {
+                titleElement5.style.color = '#FFFFFF';
+                document.getElementById('slide5-h4-1').style.color = '#FFFFFF';
+                document.getElementById('slide5-h4-2').style.color = '#FFFFFF';
+                document.getElementById('slide5-h4-3').style.color = '#FFFFFF';
+                document.getElementById('slide5-h4-4').style.color = '#FFFFFF';
+            }
+            const titleElement6 = document.getElementById('slide6-h2');
+            if (titleElement6) {
+                titleElement6.style.color = '#FFFFFF';
+                // Active tabs
+                document.getElementById('tab-title').style.color = '#FFFFFF';
+                document.getElementById('tab-desc').style.color = '#A0A0A0';
+            }
+            const titleElement7 = document.getElementById('slide7-h2');
+            if (titleElement7) {
+                titleElement7.style.color = '#FFFFFF';
+                document.getElementById('calc-vol-txt').style.color = '#FFFFFF';
+                document.getElementById('est-revenue').style.color = '#FFFFFF';
+                document.getElementById('slide7-strong-1').style.color = '#FFFFFF';
+                document.getElementById('slide7-strong-2').style.color = '#FFFFFF';
+                document.getElementById('slide7-strong-3').style.color = '#FFFFFF';
+            }
+            const titleElement8 = document.getElementById('slide8-h2');
+            if (titleElement8) titleElement8.style.color = '#FFFFFF';
+        }
+
+        function revertAtmosphereColors() {
+            // Remove inline stylings so they revert back to Tailwind styles
+            const elementsToRevert = [
+                'slide1-h2', 'slide2-h2', 'slide2-ul', 'slide3-h2', 'slide3-h4-1', 'slide3-h4-2', 'slide3-h4-3',
+                'slide4-h2', 'slide5-h2', 'slide5-h4-1', 'slide5-h4-2', 'slide5-h4-3', 'slide5-h4-4',
+                'slide6-h2', 'tab-title', 'tab-desc', 'slide7-h2', 'calc-vol-txt', 'est-revenue',
+                'slide7-strong-1', 'slide7-strong-2', 'slide7-strong-3', 'slide8-h2'
+            ];
+            elementsToRevert.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.removeAttribute('style');
+                }
+            });
+        }
+
+        // Key bindings for arrow navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                nextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Swipe Gesture support for mobile devices
+        function setupSlideSwipes() {
+            const slideArea = document.getElementById('main-slide-frame');
+            let startX = 0;
+            let endX = 0;
+
+            slideArea.addEventListener('touchstart', function(e) {
+                startX = e.changedTouches[0].screenX;
+            }, {passive: true});
+
+            slideArea.addEventListener('touchend', function(e) {
+                endX = e.changedTouches[0].screenX;
+                const threshold = 60;
+                if (startX - endX > threshold) {
+                    nextSlide(); // Swiped left -> load next
+                } else if (endX - startX > threshold) {
+                    prevSlide(); // Swiped right -> load previous
+                }
+            }, {passive: true});
+        }
+    </script>
+</body>
+</html>
